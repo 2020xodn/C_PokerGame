@@ -30,7 +30,7 @@ void Edge(){
     int h = 0xa2;
     int v = 0xcc;
 	
-	for(i = 0; i <= 42; i++){			// 메인 가로
+	for(i = 0; i <= 42; i++){			// Main Horizontal
 		gotoxy(i * 2, 0);
 		printf("%c%c", h, v);
 		
@@ -44,7 +44,7 @@ void Edge(){
 		printf("%c%c", h, v);
 	}
 		
-	for(i = 0; i<= 28; i++){				// 메인 세로
+	for(i = 0; i<= 28; i++){				// Main Vertical
 		gotoxy(0, i);
 		printf("%c%c", h, v);
 		
@@ -52,7 +52,7 @@ void Edge(){
 		printf("%c%c", h, v);
 	}
 	
-	for(i = 0; i < 10; i++){			// 선택 가로
+	for(i = 0; i < 10; i++){			// Select Horizontal
 		gotoxy(88 + i * 2, 20);
 		printf("%c%c", h, v);
 		
@@ -60,7 +60,7 @@ void Edge(){
 		printf("%c%c", h, v);
 	}
 	
-	for(i = 0; i < 6; i++){				// 선택 세로
+	for(i = 0; i < 6; i++){				// Select Vertical
 		gotoxy(88, 20 + i);
 		printf("%c%c", h, v);
 		
