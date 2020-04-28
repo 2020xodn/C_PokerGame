@@ -84,7 +84,7 @@ void gotoxy(int x, int y){	// gotoxy
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),Pos);
 }
 
-void Big_Clear(){
+void Big_Clear(){	// Made by 2020xodn
 	gotoxy(2, 1);printf("                                                                                  ");
 	gotoxy(2, 2);printf("                                                                                  ");
 	gotoxy(2, 3);printf("                                                                                  ");
@@ -330,7 +330,7 @@ void Poker_Room(){
 
 void ShowCard(int N[], int T[], int C[])	// Print Card
 {
-	for(int i = 0; i <= 4; i++)
+	for(int i = 0; i <= 4; i++)	// Made by 2020xodn
 	{
 		
 		Set_Color(15);
