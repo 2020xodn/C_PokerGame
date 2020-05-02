@@ -2,6 +2,7 @@
 #include <windows.h>            // gotoxy, system, sleep
 #include <time.h>               // srand
 #include <conio.h>              // getch()
+#include <math.h>               // floor()
 
 float money = 500.00;   // money
 
@@ -82,7 +83,7 @@ void Edge(){
 }
 
 void Status(){
-	gotoxy(88, 3);printf("Money($) :  %.2lf ", money);
+	gotoxy(88, 3);printf("Money($) :  %.2lf     ", money);
 }
 	
 void Set_Color(int Text){
@@ -498,7 +499,13 @@ void Show(int x, int y, int N, int T, int Big){        // x y -> location  , N T
 }
     
 void Poker_Five_Draw_1(){
-
+    int Number[5];              // number
+    int Type[5];                // type
+    
+    int key;
+    
+    int Poker_count = 1;        // n time's game
+    
 
 	Full_Clear();
 		
@@ -516,31 +523,116 @@ void Poker_Five_Draw_1(){
 		Poker_Five_Draw_1_inf();    
     }
         
-    while(1){
-        int Number[5];              // number
-        int Type[5];                // type
- 		int T_Number[6] = {};		// discarded card
+    while(1){                   // You can replay game
+ 		int T_Number[6] = {};		// discarded card reset
 		int T_Type[6] = {};
 		
 		int point = 0;				    // At every game , score reset
 		int Change[5] = {1,1,1,1,1};			// Change reset
-        int hh = 1;  
+        int hh = 1;
+ 
+		int bet1 = 0;							// Bet
+		int bet2 = 0; 
         
         Full_Clear();
                
-        for(int i = 0; i <= 4; i++){
-            Sleep(200);
-			gotoxy(8 + i*15, 8); printf("┏━━━━━━┓ ");
-			gotoxy(8 + i*15, 9); printf("┃ ?    ┃ ");
-			gotoxy(8 + i*15, 10);printf("┃      ┃ ");
-			gotoxy(8 + i*15, 11);printf("┃   ?  ┃ ");
-			gotoxy(8 + i*15, 12);printf("┃      ┃ ");
-			gotoxy(8 + i*15, 13);printf("┃     ?┃ ");
-			gotoxy(8 + i*15, 14);printf("┗━━━━━━┛ ");        
-        }
+		for(int i = 1 ; i <= 5; i++){			// First Draw
+			for(int j = 0; j < 70; j++){
+				if(73 - j != 67 - 15 * (5 - i)){
+					Sleep(5- ((5-i) * 0.5));	// 4
+					
+					gotoxy(73 - j, 8); printf("┏━━━━━━┓ ");
+					gotoxy(73 - j, 9); printf("┃ ?    ┃ ");
+					gotoxy(73 - j, 10);printf("┃      ┃ ");
+					gotoxy(73 - j, 11);printf("┃   ?  ┃ ");
+					gotoxy(73 - j, 12);printf("┃      ┃ ");
+					gotoxy(73 - j, 13);printf("┃     ?┃ ");
+					gotoxy(73 - j, 14);printf("┗━━━━━━┛ ");
+				}
+				else break;
+			}
+		}
         
-		for(int i = 0; i <= 4; i++)					// Draw Card
-		{			
+        
+        while(1){							// Bet First Time
+			Long_Clear();
+			Small_Clear();
+			
+			gotoxy(3, 21);printf("%d times Game", Poker_count);
+			gotoxy(0, 28);
+            Sleep(500);
+			gotoxy(3, 23);printf("How much will you bet on?");
+			gotoxy(3, 24);printf("(0 to exit)");
+			
+			gotoxy(70, 22);printf("%c%c %c%c %c%c  1", 0xa1,0xe8, 0xa1,0xe9, 0xa1,0xbe);
+			gotoxy(70, 23);printf("%c%c %c%c %c%c 50", 0xa1,0xe7, 0xa1,0xe6, 0xa1,0xbe);
+			
+			gotoxy(91, 22);printf("Bet 1");
+			
+			
+			while(1){							// 베팅 키 인식
+				gotoxy(97, 22);printf("%d", bet1);
+				gotoxy(0, 28);
+				key = getch();
+				if(key == 224)
+				{
+					key = getch();
+					gotoxy(97, 22);printf("         ");
+					
+					switch(key){
+						case 72:
+							if(0 <= bet1 && bet1 < floor(money))	// floor 은 버림 함수
+								bet1++;
+							break;
+							
+						case 75:
+							if(bet1 <= 50)
+								bet1 = 0;
+							else if(50 <= bet1 && bet1 <= floor(money))
+								bet1 -= 50;
+							break;
+							
+						case 77:
+							if(floor(money) - 50 < bet1)
+								bet1 = floor(money);
+							else if(0 <= bet1 && bet1 <= floor(money) - 50)
+								bet1 += 50;
+							break;
+						
+						case 80:
+							if(1 <= bet1 && bet1 <= floor(money))
+								bet1--;
+							break;
+							
+						default:
+							break;
+					}
+				}
+				
+				if(key == 13 || key == 32)
+					break;
+			}
+			
+			Long_Clear();
+			if(bet1 == 0){						// 베팅 취소
+				Small_Clear();
+				gotoxy(3, 22);
+				printf("Would you like to stop Five Draw Poker?");
+				if(YN() == 1)
+					break;
+				else continue;
+			}
+			else{
+				money -= bet1;
+				Status();
+				break;
+			}
+		}
+        
+		if(bet1 == 0)
+			break;
+       
+		for(int i = 0; i <= 4; i++){					// Draw Card
 			Number[i] = rand() % 9 + 6;
 			Type[i] = rand() % 4 + 1;
 		
@@ -556,18 +648,213 @@ void Poker_Five_Draw_1(){
         for(int i = 0; i <= 4; i++) // Change reset
             Change[i] = 0;
             
+ 		for(int i = 0; i < 5; i++){					// Create Circle to Change
+			gotoxy(12 + 15 * i, 18);printf("%c%c", 0xa1, 0xdb);
+			
+			gotoxy(75, 16);printf("Complete");
+			gotoxy(80, 18);printf("%c%c", 0xa1, 0xdb);
+		}
+		
+		gotoxy(20, 23);
+		printf("%c%c %c%c to Move, Space Bar or Enter key to Select", 0xa1, 0xe7, 0xa1, 0xe6);
+			           
             
+        for(int select = 1; ; ){							// Card Change
+			if(select <= 5){
+				gotoxy(13 + 15 * (select-1), 18);printf("\b%c%c", 0xa1, 0xdc);
+				gotoxy(2, 21);
+			}
+			else if(select == 6){
+				gotoxy(81, 18);printf("\b%c%c", 0xa1, 0xdc);
+			}
+			
+			gotoxy(0, 28);
+			key = getch();
+			if(key == 224){
+				key = getch();
+				if(select <= 5){
+					gotoxy(13 + 15 * (select-1), 18);printf("\b%c%c", 0xa1, 0xdb);
+				}
+				else if(select == 6){
+					gotoxy(81, 18);printf("\b%c%c", 0xa1, 0xdb);
+				}
+				
+				switch(key){
+					case 75:
+						if(1 < select && select <= 6)
+							select--;
+						break;
+					
+					case 77:
+						if(1 <= select && select < 6)
+							select++;
+						break;
+						
+					default:
+						break;
+				}
+			}
+				
+			if(key == 13 || key == 32){
+				if(select <= 5){
+					if(Change[select] == 0){			// Create V
+						Change[select - 1] = 1;
+						gotoxy(12 + 15 * (select-1), 16);
+						printf("%c%c", 0xa1, 0xee);
+					}
+					else if(Change[select] == 1){		// Delete V
+						Change[select - 1] = 0;
+						gotoxy(12 + 15 * (select-1), 16);
+						printf("  ");
+					}
+				}
+				if(select == 6)
+					break;
+			}
+		}
+        gotoxy(2, 16);printf("                                                                                  ");     //  Delete Circle
+        gotoxy(2, 18);printf("                                                                                  ");	        
         
         
-        while(hh != -1){
-            gotoxy(22,5);printf("Change? number : (-1 to exit) : ");
-            scanf("%d", &hh);
-            if(hh != -1)
-                Change[hh] = 1;
-        }
+		for(int i = 0; i < 5; i++){				// 카드 버리기
+			if(Change[i] == 1){
+				int a, b;
+				
+				switch(Type[i]){
+					case 1:
+						a = 0xa2; b = 0xbc;
+						break;
+					
+					case 2:
+						a = 0xa2; b = 0xbe;
+						break;
+						
+					case 3:
+						a = 0xa1; b = 0xdf;
+						break;
+						
+					case 4:
+						a = 0xa2; b = 0xc0;	
+						break;
+				}
+				
+				for(int j = 0; j < 15; j++){
+			
+                    Sleep(200);	// 20
+					
+					if(15 - j > 0){
+						gotoxy(8 + 15 * i, 15 - j);printf("          ");
+						
+						
+						if(14 - j > 0){
+							gotoxy(8 + 15 * i, 14 - j);printf("┗━━━━━━┛ ");
+							
+							if(13 - j > 0){
+								gotoxy(8 + 15 * i, 13 - j);printf("┃      ┃ ");
+								
+								if(Type[i] == 1 || Type[i] == 4){					// 검은 아래 문양
+									gotoxy(13 + 15 * i, 13 - j);
+									printf("%c%c", a,b);
+								}
+								
+								if(Type[i] == 2 || Type[i] == 3){					// 빨간 아래 문양
+									Set_Color(12);
+									
+									gotoxy(13 + 15 * i, 13 - j);
+									printf("%c%c", a,b);
+									
+									Set_Color(15);
+								}
+								
+								if(12 - j > 0){
+									gotoxy(8 + 15 * i, 12 - j);printf("┃      ┃ ");
+									
+									if(11 - j > 0){
+										gotoxy(8 + 15 * i, 11 - j);printf("┃      ┃ ");
+										
+										if(Type[i] == 1 || Type[i] == 4){			// 하얀 숫자 출력		
+											gotoxy(11 + 15 * i, 11 - j);		
+											if(Number[i] <= 10)
+												printf("%2d", Number[i]);
+											if(Number[i] == 11)
+												printf("J");
+											if(Number[i] == 12)
+												printf("Q");
+											if(Number[i] == 13)
+												printf("K");
+											if(Number[i] == 14)
+												printf("A");
+										}
+										
+										if(Type[i] == 2 || Type[i] == 3){			// 빨간 숫자 출력	
+											Set_Color(12);
+											
+											gotoxy(11 + 15 * i, 11 - j);		
+											if(Number[i] <= 10)
+												printf("%2d", Number[i]);
+											if(Number[i] == 11)
+												printf("J");
+											if(Number[i] == 12)
+												printf("Q");
+											if(Number[i] == 13)
+												printf("K");
+											if(Number[i] == 14)
+												printf("A");
+											
+											Set_Color(15);
+										}
+										
+										if(10 - j > 0){
+											gotoxy(8 + 15 * i, 10 - j);printf("┃      ┃ ");
+											
+											if(9 - j > 0){
+												gotoxy(8 + 15 * i, 9 - j);printf("┃      ┃ ");
+												
+												if(Type[i] == 1 || Type[i] == 4){	// 하얀 위 문양
+													gotoxy(10 + 15 * i, 9 - j);	
+													printf("%c%c", a,b);
+												}
+												if(Type[i] == 2 || Type[i] == 3){	// 빨간 위 문양
+													Set_Color(12);
+													
+													gotoxy(10 + 15 * i, 9 - j);	
+													printf("%c%c", a,b);
+													
+													Set_Color(15);
+												}
+												
+												if(8 - j > 0){
+													gotoxy(8 + 15 * i, 8 - j);printf("┏━━━━━━┓ ");
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}        
         
         
-        for(int i = 0; i <= 4; i++){
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        /*for(int i = 0; i <= 4; i++){
             Sleep(200);
             
             if(Change[i] == 1){
@@ -579,7 +866,7 @@ void Poker_Five_Draw_1(){
                 gotoxy(8 + i*15, 13);printf("┃     ?┃ ");
                 gotoxy(8 + i*15, 14);printf("┗━━━━━━┛ "); 
             }
-        }
+        }*/
         
         
         for(int i = 0; i <= 4; i++){
@@ -862,8 +1149,3 @@ void ShowCard(int N[], int T[], int C[]){	// Print Card
 	}
 	Set_Color(15);
 }
-
-
-
-
-
