@@ -511,9 +511,10 @@ void Poker_Five_Draw_1(){
 	gotoxy(3, 24);
 	printf("Would you like to see the Manual?");
     
-	int wantManuel = YN();						// Manual
-	if(wantManuel == 1)
+	if(YN() == 1){                  // Manual
+        ing(0.5);
 		Poker_Five_Draw_1_inf();    
+    }
         
     while(1){
         int Number[5];              // number
@@ -524,9 +525,9 @@ void Poker_Five_Draw_1(){
 		int point = 0;				    // At every game , score reset
 		int Change[5] = {1,1,1,1,1};			// Change reset
         int hh = 1;  
-        Status();
-        getchar();
         
+        Full_Clear();
+               
         for(int i = 0; i <= 4; i++){
             Sleep(200);
 			gotoxy(8 + i*15, 8); printf("┏━━━━━━┓ ");
@@ -808,6 +809,7 @@ void Poker_Five_Draw_1_inf(){
 	ing(0.5); 
     
 }
+
 void ShowCard(int N[], int T[], int C[]){	// Print Card
 	for(int i = 0; i <= 4; i++)
 	{
