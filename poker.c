@@ -504,7 +504,7 @@ void Poker_Five_Draw_1(){
     int key;
     
     int Poker_count = 1;        // n time's game
-    
+    int sizeOfResult;
 
 	Full_Clear();
 		
@@ -528,7 +528,7 @@ void Poker_Five_Draw_1(){
 		
 		int point = 0;				    // At every game , score reset
 		int Change[5] = {1,1,1,1,1};			// Change reset
-        int hh = 1;
+        int Card[5] = {0,0,0,0,0};
  
 		int bet1 = 0;							// Bet
 		int bet2 = 0; 
@@ -813,20 +813,19 @@ void Poker_Five_Draw_1(){
             }
         }        
         
-
 		for(int i = 0; i < 5; i++){				// New Draw, Check Duplication, Bring Move
 			if(Change[i] == 1){
 				T_Number[i] = Number[i];        // Save discarded card ( To prevent duplication )
 				T_Type[i] = Type[i];
 			
+                int finish;                    // finish = 1 -> do~while
 				do{								// New Draw
-					int finish = 0;                 // finish = 1 -> break do~while
-					
+					finish = 0;
 					Number[i] = rand()% 9 + 6;
 					Type[i] = rand() % 4 + 1;	
 					
 					for(int j = 0; j < 5; j++){
-						if(i != j){             // Don't Check Same Card
+						if(i != j){                     // Don't Check Same Card
 							if(Number[i] == Number[j] && Type[i] == Type[j])
 								finish = 1;
 						}
@@ -878,37 +877,67 @@ void Poker_Five_Draw_1(){
 					}
 				}
 			}
-		}	        
+		}
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-         
-        /*for(int i = 0; i <= 4; i++){
-            if(Change[i] == 1){
-                T_Number[i] = Number[i];        
-                T_Type[i] = Type[i];
-                
-                Number[i] = rand() % 9 + 6;
-                Type[i] = rand() % 4 + 1;
+ 		while(1){							// Bet Second Time
+			Long_Clear();
+			
+			gotoxy(3, 21);printf("It's time to Second Bet.");
             
-                for(int j = 1; i-j >= 0; j++)		// Check 
-                {
-                    if(Number[i] == Number[i-j] && Type[i] == Type[i-j])
-                        i--;
-                    else if(Number[i] == T_Number[j] && Type[i] == T_Type[j]){
-                        i--;
-                    }
-                }
-            }
-        }*/
+            gotoxy(3, 23);printf("How much will you bet on?");
+			gotoxy(3, 24);printf("(0 to exit)");
+            
+			gotoxy(70, 22);printf("%c%c %c%c %c%c  1", 0xa1,0xe8, 0xa1,0xe9, 0xa1,0xbe);
+			gotoxy(70, 23);printf("%c%c %c%c %c%c 50", 0xa1,0xe7, 0xa1,0xe6, 0xa1,0xbe);
+			
+			gotoxy(91, 24);printf("Bet 2");
+			
+			while(1){
+				gotoxy(97, 24);printf("%d", bet2);
+				gotoxy(0, 28);
+				key = getch();
+				if(key == 224){
+					key = getch();
+					gotoxy(97, 24);printf("         ");
+					
+					switch(key){
+						case 72:
+							if(0 <= bet2 && bet2 < floor(money))	// floor 은 버림 함수
+								bet2++;
+							break;
+							
+						case 75:
+							if(bet2 <= 50)
+								bet2 = 0;
+							else if(50 <= bet2 && bet2 <= floor(money))
+								bet2 -= 50;
+							break;
+							
+						case 77:
+							if(floor(money) - 50 < bet2)
+								bet2 = floor(money);
+							else if(0 <= bet2 && bet2 <= floor(money) - 50)
+								bet2 += 50;
+							break;
+						
+						case 80:
+							if(1 <= bet2 && bet2 <= floor(money))
+								bet2--;
+							break;
+							
+						default:
+							break;
+					}
+				}
+				
+				if(key == 13 || key == 32)
+					break;
+			}
+			money -= bet2;
+			Status();
+			break;
+		}
+        
         
  /*     Number[0] = 13;       // FOR TEST
         Number[1] = 12;
@@ -922,49 +951,174 @@ void Poker_Five_Draw_1(){
         Type[4] = 1;*/
         
         ShowCard(Number, Type, Change);
-        
-        
+               
         // Scoring Start
-        
-        if(Type[0] == Type[1] && Type[0] == Type[2] && Type[0] == Type[3] && Type[0] == Type[4])  // Flush
-            point += 10;
+		{
 			
- 		{									// Straight
-			for(int i = 0; i <= 3; i++)			// Descending Bubble Sort
-			{                                   
-				for(int j = 0; j <= 3-i; j++)
-				{
-					if(Number[j] < Number[j+1])
-					{
-						int t = Number[j];
-						Number[j] = Number[j+1];
-						Number[j+1] = t;
-						
-						t = Type[j];
-						Type[j] = Type[j+1];
-						Type[j+1] = t;
+			/* if(Number[0] == 10 && Number[1] == 11 && Number[2] == 12 && Number[3] == 13 && Number[4] == 14)	// Moundtain
+                p += 20; */
+			
+			if(Type[0] == Type[1] && Type[0] == Type[2] && Type[0] == Type[3] && Type[0] == Type[4]){ // 플러시
+				Card[0] = 1;
+				Card[1] = 1;
+				Card[2] = 1;
+				Card[3] = 1;
+				Card[4] = 1;
+				
+				point += 10;
+			}
+			
+			{									// Straight
+				for(int i = 0; i < 4; i++){			// Descending Bubble Sort
+					for(int j = i+1; j + i <= 4; j++){
+						if(Number[j] < Number[j+1])
+						{
+							int t = Number[j];
+							Number[j] = Number[j+1];
+							Number[j+1] = t;
+							
+							t = Type[j];
+							Type[j] = Type[j+1];
+							Type[j+1] = t;
+						}
+					}
+				}
+				
+				if((Number[0] - 1) == Number[1]){	// Check if it gets smaller
+					if((Number[1] - 1) == Number[2]){
+						if((Number[2] - 1) == Number[3]){
+							if((Number[3] - 1) == Number[4]){
+								Card[1] = 1;
+								Card[2] = 1;
+								Card[3] = 1;
+								Card[4] = 1;
+								Card[5] = 1;
+								
+								point += 20;
+							}
+						}
 					}
 				}
 			}
 			
-			if((Number[0] - 1) == Number[1]){	// Check if it gets smaller				
-                if((Number[1] - 1) == Number[2]){
-					if((Number[2] - 1) == Number[3]){
-						if((Number[3] - 1) == Number[4])
-                            point += 20;
+			for(int i = 0; i < 5; i++){	// Kind of Pair, Full House
+				for(int j = 1; (i+j) < 5; j++){
+					if(Number[i] == Number[i+j]){
+						Card[i] = 1;
+						Card[i+j] = 1;
+						point++;
 					}
 				}
-			}
-		}  
-        
-      	for(int i = 0; i <= 3; i++){	// Kind of Pair, Full House
-			for(int j = 1; (i+j) <= 4; j++){
-				if(Number[i] == Number[i+j])
-					point++;
 			}
 		}
+  
+		gotoxy(3,17);printf("Number[0] = %d %d",Number[0], Type[0]);        // FOR TEST
+        gotoxy(22,17);printf("Number[0] = %d %d",Number[1], Type[1]);
+        gotoxy(44,17);printf("Number[0] = %d %d",Number[2], Type[2]);
+        gotoxy(3,18);printf("Number[0] = %d %d",Number[3], Type[3]);
+        gotoxy(22,18);printf("Number[0] = %d %d",Number[4], Type[4]);
         
+		Long_Clear();
+		Small_Clear();
+
+		gotoxy(90, 22);printf("Final bet amount");
+		gotoxy(95, 24);printf("%.2lf", (bet1 + bet2 * 0.8));
         
+		sizeOfResult = Card[0] + Card[1] + Card[2] + Card[3] + Card[4];
+		gotoxy(0, 28);getch();
+
+		if(point != 0){						// Results window
+			{												// Draw window
+				gotoxy(42 - (6 * sizeOfResult) - 1, 6);printf("┏");		// Top
+				for(int j = 1; j <= 6 * sizeOfResult; j++){
+					printf("━━");
+				}
+				printf("┓");
+				
+				for(int j = 7; j <= 15; j++){						// Side
+					gotoxy(42 - (6 * sizeOfResult) - 1, j);printf("┃");
+					for(int k = 1; k <= 6 * sizeOfResult; k++){
+						printf("  ");
+					}
+					printf("┃");
+				}
+				
+				gotoxy(42 - (6 * sizeOfResult) - 1, 16);printf("┗");	// Bottom
+				for(int j = 1; j <= 6 * sizeOfResult; j++){
+					printf("━━");
+				}
+				printf("┛");
+			}
+			
+			{												// 결과 출력 카드(모양)
+				int k = 0;
+			
+				for(int j = 0; j < 5; j++){
+					if(Card[j] == 1){
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2,  9);printf("┏━━━━━━┓ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 10);printf("┃ ?    ┃ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 11);printf("┃      ┃ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 12);printf("┃   ?  ┃ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 13);printf("┃      ┃ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 14);printf("┃     ?┃ ");
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 2, 15);printf("┗━━━━━━┛ ");
+						k++;
+					}
+				}
+			}
+			
+			{												// 결과 출력 카드(문양)
+				int k = 0;
+				
+				for(int i = 0; i < 5; i++){
+					if(Card[i] == 1){
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 4, 10);		// 위 문양
+						if(Type[i] == 1)
+							printf("%c%c", 0xa2, 0xbc);
+						else if(Type[i] == 2){
+							Set_Color(12);
+							printf("%c%c", 0xa2, 0xbe);
+						}
+						else if(Type[i] == 3){
+							Set_Color(12);
+							printf("%c%c", 0xa1, 0xdf);
+						}
+						else if(Type[i] == 4)
+							printf("%c%c", 0xa2, 0xc0);
+						
+						gotoxy(41 - (6 * sizeOfResult) + (12 * k) + 8, 14);		// 아래 문양
+						if(Type[i] == 1)
+							printf("%c%c", 0xa2, 0xbc);
+						else if(Type[i] == 2)
+							printf("%c%c", 0xa2, 0xbe);
+						else if(Type[i] == 3)
+							printf("%c%c", 0xa1, 0xdf);
+						else if(Type[i] == 4)
+							printf("%c%c", 0xa2, 0xc0);
+						
+						
+						gotoxy(42 - (6 * sizeOfResult) + (12 * k) + 6, 12);		// 숫자
+						if(Number[i] <= 10)
+							printf("%d", Number[i]);
+						else if(Number[i] == 11)
+							printf("J");
+						else if(Number[i] == 12)
+							printf("Q");
+						else if(Number[i] == 13)
+							printf("K");
+						else if(Number[i] == 14)
+							printf("A");
+						
+						k++;
+					}
+					
+					Set_Color(15);
+				}
+			}
+		}
+
+
+            
         switch(point){						// Result
 				case 0:
 					gotoxy(3, 22);printf("High Card.");
@@ -1002,11 +1156,8 @@ void Poker_Five_Draw_1(){
 					gotoxy(3, 22);printf("Straight.");
 					break;	
 		}
-        gotoxy(3,23);printf("point is %d",point);
         
         
-        
-        getchar();
         getchar();
     }
     
@@ -1042,7 +1193,7 @@ void Poker_Five_Draw_1_inf(){
 				gotoxy(3, 10); printf("2. Check the cards and select the cards to replace.");
 				gotoxy(3, 12); printf("3. After receiving new cards, you place a second bet before checking.");
                 gotoxy(3, 14); printf("4. This second bet will be taken out of the reserve as much as the bet is placed,");
-				gotoxy(3, 15); printf("   but will be treated as 0.8 times the final bet");
+				gotoxy(3, 15); printf("   but will be treated as 0.8 times the final bet amount");
 				gotoxy(3, 17); printf("5. In other words, the final bet amount is");
 				gotoxy(3, 18); printf("   first bet amount + 0.8 * second bet amount");                            
 				
@@ -1167,3 +1318,4 @@ void ShowCard(int N[], int T[], int C[]){	// Print Card
 	}
 	Set_Color(15);
 }
+
