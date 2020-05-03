@@ -1020,7 +1020,7 @@ void Poker_Five_Draw_1(){
         gotoxy(22,17);printf("Number[1] = %d %d",Number[1], Type[1]);
         gotoxy(44,17);printf("Number[2] = %d %d",Number[2], Type[2]);
         gotoxy(3,18);printf("Number[3] = %d %d",Number[3], Type[3]);
-        gotoxy(22,18);printf("Number[4]] = %d %d",Number[4], Type[4]);
+        gotoxy(22,18);printf("Number[4] = %d %d",Number[4], Type[4]);
         
 		Long_Clear();
 		Small_Clear();
@@ -1121,48 +1121,82 @@ void Poker_Five_Draw_1(){
 			}
 		}
 
-
-            
-        switch(point){						// Result
-				case 0:
-					gotoxy(3, 22);printf("High Card.");
-					break;
+        switch(point)						// 결과
+		{
+			case 0:
+				gotoxy(3, 22);printf("High Card.");
+				gotoxy(3, 24);printf("You lost %d.", (bet1 + bet2));
+				break;
+			
+			case 1:
+				gotoxy(41, 7);printf("Pair..");
+				gotoxy(3, 22);printf("Your hand is Pair.");
+				money += (float)((bet1 + 0.8 * bet2) * 0.5);
+				gotoxy(3, 24);printf("You got %.2lf Dollars back.", ((bet1 + 0.8 * bet2) * 0.5));
+				break;
 				
-				case 1:
-					gotoxy(3, 22);printf("Pair.");
-					break;
-					
-				case 2:
-					gotoxy(3, 22);printf("Two Pair.");
-					break;
-					
-				case 3:
-					gotoxy(3, 22);printf("Three of a kind.");
-					break;
+			case 2:
+				gotoxy(38, 7);printf("Two Pair");
+				gotoxy(3, 22);printf("Your hand is Two Pair.");
+				money += (float)((bet1 + 0.8 * bet2) * 0.9);
+				gotoxy(3, 24);printf("You got %.2lf Dollars back.", ((bet1 + 0.8 * bet2) * 0.9));
+				break;
 				
-				case 4:
-				case 13:
-					gotoxy(3, 22);printf("Full House.");
-					break;
-					
-				case 6:
-				case 16:
-					gotoxy(3, 22);printf("Four of a kind.");
-					break;
-					
-				case 10:
-				case 11:	
-				case 12:
-					gotoxy(3, 22);printf("Flush.");
-					break;	
-					
-				case 20:
-					gotoxy(3, 22);printf("Straight.");
-					break;	
-		}
+			case 3:
+				gotoxy(30, 7);printf("Three of a kind~");
+				gotoxy(3, 22);printf("Your hand is Three of a kind.");
+				money += (float)((bet1 + 0.8 * bet2) * 3);
+				gotoxy(3, 24);printf("You got %.2lf Dollars.", ((bet1 + 0.8 * bet2) * 3.0));
+				break;
+			
+			case 4:
+			case 14:
+				gotoxy(35, 7);printf("Full House~~~");
+				gotoxy(3, 22);printf("Your hand is Full House.");
+				money += (float)((bet1 + 0.8 * bet2) * 10);
+				gotoxy(3, 24);printf("You got %.2lf Dollars.", ((bet1 + 0.8 * bet2) * 10.0));
+				break;
+				
+			case 6:
+			case 16:
+				gotoxy(30, 7);printf("Four of a Kind~~!!!!");
+				gotoxy(3, 22);printf("Your hand is Four of a Kind.");
+				money += (float)((bet1 + 0.8 * bet2) * 30);
+				gotoxy(3, 24);printf("You got %.2lf Dollars.", ((bet1 + 0.8 * bet2) * 30.0));
+				break;
+				
+			case 10:				
+			case 11:
+			case 12:
+            case 13:
+				gotoxy(39, 7);printf("Flush~~");
+				gotoxy(3, 22);printf("Your hand is Flush.");
+				money += (float)((bet1 + 0.8 * bet2) * 8);
+                gotoxy(3, 24);printf("You got %.2lf Dollars.", ((bet1 + 0.8 * bet2) * 8.0));
+				break;
+				
+			case 20:
+				gotoxy(39, 7);printf("Straight~~");
+				gotoxy(3, 22);printf("Your hand is Straight.");
+				money += (float)((bet1 + 0.8 * bet2) * 20);
+				gotoxy(3, 24);printf("You got %.2lf Dollars.", ((bet1 + 0.8 * bet2) * 20.0));
+				break;	
+		}    
         
         
-        getchar();
+		gotoxy(0, 28);getch();
+        
+		Long_Clear();
+		Small_Clear();
+        
+		Status();
+		gotoxy(3, 22);printf("Would you like to play Five Draw Poker again?");
+        
+        if(YN() == 2)       // Re Try ?
+            break;
+           
+		
+		Poker_count++;        
     }
     
 }
