@@ -814,71 +814,59 @@ void Poker_Five_Draw_1(){
         }        
         
 
-		for(int i = 0; i < 5; i++){				// 새로 뽑기, 중복 체크, 카드 가져오기
+		for(int i = 0; i < 5; i++){				// New Draw, Check Duplication, Bring Move
 			if(Change[i] == 1){
-				T_Number[i] = Number[i];
+				T_Number[i] = Number[i];        // Save discarded card ( To prevent duplication )
 				T_Type[i] = Type[i];
 			
-				do{								// 새로 뽑기
-					int finish = 0;
+				do{								// New Draw
+					int finish = 0;                 // finish = 1 -> break do~while
 					
 					Number[i] = rand()% 9 + 6;
 					Type[i] = rand() % 4 + 1;	
 					
-					for(int j = 0; j < 5; j++)
-					{
-						if(i != j){
+					for(int j = 0; j < 5; j++){
+						if(i != j){             // Don't Check Same Card
 							if(Number[i] == Number[j] && Type[i] == Type[j])
 								finish = 1;
 						}
 					}
 					
-					for(int j = 0; j < 5; j++)
-					{
-						if(Number[i] == T_Number[j] && Type[i] == T_Type[j])	// T
+					for(int j = 0; j < 5; j++){
+						if(Number[i] == T_Number[j] && Type[i] == T_Type[j])	// Discarded Card Check
 							finish = 1;
 					}
 						
 				}while(finish == 1);
 				
-				//for(int i = 0; i < 5; i++){				// 카드 가져오기
-					if(Change[i] == 1){
-						for(int j = 1; j < 15; j++){
+				if(Change[i] == 1){
+					for(int j = 1; j < 15; j++){
+						
+						Sleep(25);	// 25
+						
+						if(8 - j > 0){
+							gotoxy(8 + 15 * i, j+7);printf("┗━━━━━━┛ ");
 							
-							Sleep(25);	// 25
-							
-							if(8 - j > 0)
-							{
-								gotoxy(8 + 15 * i, j+7);printf("┗━━━━━━┛ ");
+							if(9 - j > 0){
+								gotoxy(8 + 15 * i, j+6);printf("┃     ?┃ ");
 								
-								if(9 - j > 0)
-								{
-									gotoxy(8 + 15 * i, j+6);printf("┃     ?┃ ");
+								if(10 - j > 0){
+									gotoxy(8 + 15 * i, j+5);printf("┃      ┃ ");
 									
-									if(10 - j > 0)
-									{
-										gotoxy(8 + 15 * i, j+5);printf("┃      ┃ ");
+									if(11 - j > 0){
+										gotoxy(8 + 15 * i, j+4);printf("┃   ?  ┃");
 										
-										if(11 - j > 0)
-										{
-											gotoxy(8 + 15 * i, j+4);printf("┃   ?  ┃");
+										if(12 - j > 0){
+											gotoxy(8 + 15 * i, j+3);printf("┃      ┃ ");
 											
-											if(12 - j > 0)
-											{
-												gotoxy(8 + 15 * i, j+3);printf("┃      ┃ ");
+											if(13 - j > 0){
+												gotoxy(8 + 15 * i, j+2);printf("┃ ?    ┃ ");
 												
-												if(13 - j > 0)
-												{
-													gotoxy(8 + 15 * i, j+2);printf("┃ ?    ┃ ");
+												if(14 - j > 0){
+													gotoxy(8 + 15 * i, j+1);printf("┏━━━━━━┓ ");
 													
-													if(14 - j > 0)
-													{
-														gotoxy(8 + 15 * i, j+1);printf("┏━━━━━━┓ ");
-														
-														if(15 - j > 0)
-														{
-															gotoxy(8 + 15 * i, j);printf("          ");
-														}
+													if(15 - j > 0){
+														gotoxy(8 + 15 * i, j);printf("          ");
 													}
 												}
 											}
@@ -888,7 +876,7 @@ void Poker_Five_Draw_1(){
 							}
 						}
 					}
-				//}
+				}
 			}
 		}	        
         
@@ -905,7 +893,7 @@ void Poker_Five_Draw_1(){
          
         /*for(int i = 0; i <= 4; i++){
             if(Change[i] == 1){
-                T_Number[i] = Number[i];        // Save discarded card ( To prevent duplication )
+                T_Number[i] = Number[i];        
                 T_Type[i] = Type[i];
                 
                 Number[i] = rand() % 9 + 6;
