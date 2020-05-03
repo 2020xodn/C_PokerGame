@@ -969,18 +969,22 @@ void Poker_Five_Draw_1(){
 			}
 			
 			{									// Straight
-				for(int i = 0; i < 4; i++){			// Descending Bubble Sort
-					for(int j = i+1; j + i <= 4; j++){
-						if(Number[j] < Number[j+1])
-						{
-							int t = Number[j];
-							Number[j] = Number[j+1];
-							Number[j+1] = t;
+				for(int i = 0; i < 4; i++){			// Descending Sort
+					for(int j = i+1; j <= 4; j++){
+						if(Number[i] < Number[j]){
+							int t = Number[i];
+							Number[i] = Number[j];
+							Number[j] = t;
 							
-							t = Type[j];
-							Type[j] = Type[j+1];
-							Type[j+1] = t;
+							t = Type[i];
+							Type[i] = Type[j];
+							Type[j] = t;
 						}
+                        if(Number[i] == Number[j] && Type[i] > Type[j]){    // Type Ascending
+                            int t = Type[i];
+                            Type[i] = Type[j];
+							Type[j] = t;
+                        }
 					}
 				}
 				
@@ -1013,10 +1017,10 @@ void Poker_Five_Draw_1(){
 		}
   
 		gotoxy(3,17);printf("Number[0] = %d %d",Number[0], Type[0]);        // FOR TEST
-        gotoxy(22,17);printf("Number[0] = %d %d",Number[1], Type[1]);
-        gotoxy(44,17);printf("Number[0] = %d %d",Number[2], Type[2]);
-        gotoxy(3,18);printf("Number[0] = %d %d",Number[3], Type[3]);
-        gotoxy(22,18);printf("Number[0] = %d %d",Number[4], Type[4]);
+        gotoxy(22,17);printf("Number[1] = %d %d",Number[1], Type[1]);
+        gotoxy(44,17);printf("Number[2] = %d %d",Number[2], Type[2]);
+        gotoxy(3,18);printf("Number[3] = %d %d",Number[3], Type[3]);
+        gotoxy(22,18);printf("Number[4]] = %d %d",Number[4], Type[4]);
         
 		Long_Clear();
 		Small_Clear();
